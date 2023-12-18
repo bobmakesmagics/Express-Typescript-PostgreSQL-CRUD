@@ -5,7 +5,7 @@ const pool = new Pool({
   host: 'localhost',
   database: 'crud_temp',
   password: '123456789',
-  port: 5432, // or the port you are using for PostgreSQL
+  port: 5432,
 });
 
 export default pool;
