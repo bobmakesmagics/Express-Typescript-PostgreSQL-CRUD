@@ -1,6 +1,6 @@
 # APPLICANT CRUD App
 
-This is a simple CRUD (Create, Read, Update, Delete) app built using TypeScript and Express.
+This is a simple CRUD (Create, Read, Update, Delete) app built using TypeScript, PostgreSQL and Express.
 
 ## Getting Started
 
