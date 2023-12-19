@@ -7,12 +7,16 @@
     "start": "node dist/server.js",
     "dev": "nodemon src/server.ts",
     "build": "tsc",
-    "test": "cross-env NODE_ENV=test jest --verbose --coverage"
+    "migrate:dev": "npx prisma migrate dev",
+    "migrate:prod": "npx prisma migrate deploy",
+    "generate": "npx prisma generate",
+    "test": "cross-env NODE_ENV=test jest"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "^5.7.1",
     "@types/express": "^4.17.21",
     "@types/node": "^20.10.5",
     "@types/pg": "^8.10.9",
@@ -31,6 +35,8 @@
     "@types/uuid": "^9.0.7",
     "cross-env": "^7.0.3",
     "jest": "^29.7.0",
+    "jest-mock-extended": "^3.0.5",
+    "prisma": "^5.7.1",
     "supertest": "^6.3.3",
     "ts-jest": "^29.1.1"
   }
