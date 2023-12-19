@@ -7,3 +7,4 @@ This is a simple CRUD (Create, Read, Update, Delete) app built using TypeScript,
 1. Install dependencies using `npm install`.
 2. Set up your PostgreSQL database and update connection details in `src/db.ts`.
 3. Run the app using `npm run dev`.
+4. Unit test the app using `npm run test`.

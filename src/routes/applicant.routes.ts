@@ -1,19 +1,18 @@
 import { Router, Request, Response } from 'express';
-import pool from './db';
+import pool from '../db';
+import { validate as uuidValidate } from 'uuid';
 
 const router = Router();
 
 interface Applicant {
-  id: number;
-  name: string;
+  id: string;
+  username: string;
+  email: string;
+  password: string;
   admin: boolean;
 }
 
-router.get('/', (req: Request, res: Response) => {
-  res.send('Welcome to the CRUD App!');
-});
-
-router.get('/awesome/applicant', async (req: Request, res: Response) => {
+router.get('/', async (req: Request, res: Response) => {
   try {
     const result = await pool.query('SELECT * FROM applicant');
     const applicants: Applicant[] = result.rows;
@@ -24,17 +23,17 @@ router.get('/awesome/applicant', async (req: Request, res: Response) => {
   }
 });
 
-router.post('/awesome/applicant', async (req: Request, res: Response) => {
-  const { name, admin } = req.body;
+router.post('/', async (req: Request, res: Response) => {
+  const { username, email, password, admin } = req.body;
 
-  if (typeof name !== 'string' || name.trim() === '') {
+  if (typeof username !== 'string' || username.trim() === '' || !email) {
     return res.status(400).json({ error: 'Invalid applicant data' });
   }
 
   try {
     const result = await pool.query(
-      'INSERT INTO applicant (name, admin) VALUES ($1, $2 ) RETURNING *',
-      [name, admin]
+      'INSERT INTO applicant (username, email, password,admin) VALUES ($1, $2, $3, $4 ) RETURNING *',
+      [username, email, password, admin]
     );
     const createdApplicant: Applicant = result.rows[0];
     res.status(201).json(createdApplicant);
@@ -44,10 +43,10 @@ router.post('/awesome/applicant', async (req: Request, res: Response) => {
   }
 });
 
-router.delete('/awesome/applicant/:id', async (req: Request, res: Response) => {
-  const applicantID = parseInt(req.params.id, 10);
+router.delete('/:id', async (req: Request, res: Response) => {
+  const applicantID = req.params.id;
 
-  if (isNaN(applicantID)) {
+  if (!uuidValidate(applicantID)) {
     return res.status(400).json({ error: 'Invalid applicant ID' });
   }
 
@@ -60,23 +59,28 @@ router.delete('/awesome/applicant/:id', async (req: Request, res: Response) => {
   }
 });
 
-router.put('/awesome/applicant/:id', async (req: Request, res: Response) => {
-  const applicantID = parseInt(req.params.id, 10);
-  const { name, admin } = req.body;
+router.put('/:id', async (req: Request, res: Response) => {
+  const applicantID = req.params.id;
+  const { username, email, password, admin } = req.body;
 
-  if (typeof name !== 'string' || name.trim() === '') {
+  if (
+    !uuidValidate(applicantID) ||
+    typeof username !== 'string' ||
+    username.trim() === '' ||
+    !email
+  ) {
     return res.status(400).json({ error: 'Invalid applicant data' });
   }
 
   try {
     await pool.query(
-      'UPDATE applicant SET name = $1, admin = $2 WHERE id = $3',
-      [name, admin, applicantID]
+      'UPDATE applicant SET username = $1, email = $2, password = $3, admin = $4 WHERE id = $5',
+      [username, email, password, admin, applicantID]
     );
     res.sendStatus(200);
   } catch (error) {
     console.error('Error updating applicantID', error);
-    res.sendStatus(500).json({ error: 'Error updating applicantID' });
+    res.status(500).json({ error: 'Error updating applicantID' });
   }
 });
 

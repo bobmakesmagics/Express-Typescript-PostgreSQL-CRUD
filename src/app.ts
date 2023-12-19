@@ -1,9 +1,8 @@
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import bodyParser from 'body-parser';
-import todoRoutes from './routes';
+import applicantRoutes from './routes/applicant.routes';
 
 const app = express();
-const port = 4000;
 
 app.use(bodyParser.json());
 app.use(
@@ -11,8 +10,10 @@ app.use(
     extended: true,
   })
 );
-app.use('/', todoRoutes);
+app.use('/awesome/applicant', applicantRoutes);
 
-app.listen(port, () => {
-  console.log(`server is listening on http://localhost:${port}....`);
+app.use('/', (req: Request, res: Response, next: NextFunction): void => {
+  res.send('Welcome to the CRUD App!');
 });
+
+export default app;
